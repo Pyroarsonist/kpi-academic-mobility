@@ -1,3 +1,5 @@
+import { baseUrl } from "../../../kvdb";
+
 const key = "tempData";
 
 const getData = () => {
@@ -25,17 +27,22 @@ export const mergeData = (data) => {
   );
 };
 
-export const uploadData = () => {
-  let array = localStorage.getItem("list");
+export const uploadData = async () => {
+  let array = await fetch(baseUrl).then((x) => x.text());
   if (array) {
-    array = JSON.stringify(array);
+    try {
+      array = JSON.parse(array);
+    } catch (e) {
+      console.error(e);
+      array = [];
+    }
   } else {
     array = [];
   }
   const data = getData(key);
   if (!data || Object.keys(data).length === 0) return;
   array.push(data);
-  localStorage.setItem("list", JSON.stringify(array));
+  await fetch(baseUrl, { method: "post", body: JSON.stringify(array) });
 };
 
 export const clearData = () => {

@@ -56,8 +56,8 @@ function getStepContent(step) {
   }
 }
 
-const handleLastStep = () => {
-  uploadData();
+const handleLastStep = async () => {
+  await uploadData();
   clearData();
 };
 
@@ -72,9 +72,9 @@ export default () => {
 
   const isStepSkipped = (step) => skipped.has(step);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (activeStep === steps.length - 1) {
-      handleLastStep();
+      await handleLastStep();
     }
 
     let newSkipped = skipped;

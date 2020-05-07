@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -16,8 +16,7 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import TableHead from "@material-ui/core/TableHead";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
-
-import dataArr from "./data";
+import { baseUrl } from "../../kvdb";
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -184,13 +183,6 @@ function EnhancedTableHead(props) {
   );
 }
 
-const getData = () => {
-  const arr = [...dataArr];
-  const listStr = localStorage.getItem("list");
-  if (listStr) arr.push(...JSON.parse(listStr));
-  return arr;
-};
-
 const useStyles2 = makeStyles({
   table: {
     minWidth: 750,
@@ -217,8 +209,26 @@ const List = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("lastName");
+  const [rows, setRows] = React.useState([]);
 
-  const rows = getData();
+  useEffect(() => {
+    const go = async () => {
+      let array = await fetch(baseUrl).then((x) => x.text());
+      if (array) {
+        try {
+          array = JSON.parse(array);
+        } catch (e) {
+          console.error(e);
+          array = [];
+        }
+      } else {
+        array = [];
+      }
+      const arr = [...array];
+      setRows(arr);
+    };
+    go();
+  }, []);
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
