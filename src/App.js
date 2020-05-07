@@ -9,6 +9,7 @@ import About from "./components/about";
 import Home from "./components/home";
 import Layout from "./components/layout";
 import Apply from "./components/apply";
+import List from "./components/list";
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
           </Route>
           <Route path="/apply">
             <Apply />
+          </Route>
+          <Route path="/list">
+            <List />
           </Route>
           <Route path="/">
             <Home />

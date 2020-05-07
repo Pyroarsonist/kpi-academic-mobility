@@ -5,10 +5,14 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import CheckIcon from "@material-ui/icons/Check";
+import Fab from "@material-ui/core/Fab";
+import { Link } from "react-router-dom";
+import LastStep from "./lastStep";
 import CreditModule from "./currentCreditModule";
 import University from "./university";
 import Review from "./review";
-import { initData } from "./localStorage";
+import { clearData, initData, uploadData } from "./localStorage";
 
 import Contacts from "./contacts";
 
@@ -31,6 +35,7 @@ function getSteps() {
     "Дані поточного освітного кредитного модуля",
     "Університет для релокації",
     "Відгук",
+    "Відправка документів",
   ];
 }
 
@@ -42,10 +47,19 @@ function getStepContent(step) {
       return <CreditModule />;
     case 2:
       return <University />;
-    default:
+    case 3:
       return <Review />;
+    case 4:
+      return <LastStep />;
+    default:
+      return <div>error</div>;
   }
 }
+
+const handleLastStep = () => {
+  uploadData();
+  clearData();
+};
 
 export default () => {
   initData();
@@ -59,6 +73,10 @@ export default () => {
   const isStepSkipped = (step) => skipped.has(step);
 
   const handleNext = () => {
+    if (activeStep === steps.length - 1) {
+      handleLastStep();
+    }
+
     let newSkipped = skipped;
     if (isStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values());
@@ -117,9 +135,14 @@ export default () => {
         {activeStep === steps.length ? (
           <div>
             <Typography className={classes.instructions}>
-              All steps completed - you&apos;re finished
+              Ви - молодець, заповнили усі дані!
               <br />
-              тут тоже что-то добавлю
+              <Fab color="primary" className="my-3">
+                <CheckIcon />
+              </Fab>
+              <br />
+              Можете перейти на{" "}
+              <Link to="/list">список людей, що подали документи</Link>
             </Typography>
             <Button onClick={handleReset} className={classes.button}>
               На початок
