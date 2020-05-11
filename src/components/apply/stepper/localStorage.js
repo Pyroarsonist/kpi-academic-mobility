@@ -27,20 +27,23 @@ export const mergeData = (data) => {
   );
 };
 
-export const uploadData = async () => {
-  let array = await fetch(baseUrl).then((x) => x.text());
-  if (array) {
-    try {
-      array = JSON.parse(array);
-    } catch (e) {
-      console.error(e);
-      array = [];
-    }
-  } else {
-    array = [];
+export const getDataFromDatabase = async () => {
+  try {
+    const text = await fetch(baseUrl, {
+      cache: "no-cache",
+    }).then((x) => x.text());
+    const arr = JSON.parse(text);
+    return arr;
+  } catch (e) {
+    console.error(e);
+    return [];
   }
+};
+
+export const uploadData = async () => {
   const data = getData(key);
   if (!data || Object.keys(data).length === 0) return;
+  const array = await getDataFromDatabase();
   array.push(data);
   await fetch(baseUrl, { method: "post", body: JSON.stringify(array) });
 };

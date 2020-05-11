@@ -38,7 +38,7 @@ function Contacts() {
       <form autoComplete="off">
         <div className="row d-flex flex-row">
           <TextField
-            label="Фамілія"
+            label="Прізвище"
             required
             error={!lastName}
             value={lastName}

@@ -16,7 +16,7 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import TableHead from "@material-ui/core/TableHead";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
-import { baseUrl } from "../../kvdb";
+import { getDataFromDatabase } from "../apply/stepper/localStorage";
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -212,22 +212,11 @@ const List = () => {
   const [rows, setRows] = React.useState([]);
 
   useEffect(() => {
-    const go = async () => {
-      let array = await fetch(baseUrl).then((x) => x.text());
-      if (array) {
-        try {
-          array = JSON.parse(array);
-        } catch (e) {
-          console.error(e);
-          array = [];
-        }
-      } else {
-        array = [];
-      }
-      const arr = [...array];
-      setRows(arr);
+    const makeRequest = async () => {
+      const arr = await getDataFromDatabase();
+      setRows([...arr]);
     };
-    go();
+    makeRequest();
   }, []);
 
   const emptyRows =
@@ -320,23 +309,20 @@ const List = () => {
             )}
           </TableBody>
           <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: "Усі", value: -1 }]}
-                colSpan={3}
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                labelRowsPerPage="Рядки на сторінці:"
-                SelectProps={{
-                  inputProps: { "aria-label": "Рядки на сторінці" },
-                  native: true,
-                }}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-              />
-            </TableRow>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25, { label: "Усі", value: -1 }]}
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              labelRowsPerPage="Рядки на сторінці:"
+              SelectProps={{
+                inputProps: { "aria-label": "Рядки на сторінці" },
+                native: true,
+              }}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+              ActionsComponent={TablePaginationActions}
+            />
           </TableFooter>
         </Table>
       </TableContainer>
