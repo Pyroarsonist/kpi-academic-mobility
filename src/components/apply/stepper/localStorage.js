@@ -44,7 +44,7 @@ export const uploadData = async () => {
   const data = getData(key);
   if (!data || Object.keys(data).length === 0) return;
   const array = await getDataFromDatabase();
-  array.push(data);
+  array.unshift(data);
   await fetch(baseUrl, { method: "post", body: JSON.stringify(array) });
 };
 

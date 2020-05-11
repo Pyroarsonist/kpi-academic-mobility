@@ -96,6 +96,19 @@ TablePaginationActions.propTypes = {
 };
 
 function descendingComparator(a, b, orderBy) {
+  if (orderBy.includes("University")) {
+    if (
+      b[orderBy]["Назва закладу освіти"] < a[orderBy]["Назва закладу освіти"]
+    ) {
+      return -1;
+    }
+    if (
+      b[orderBy]["Назва закладу освіти"] > a[orderBy]["Назва закладу освіти"]
+    ) {
+      return 1;
+    }
+    return 0;
+  }
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -139,12 +152,14 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: "Університет",
+    universityType: true,
   },
   {
     id: "targetUniversity",
     numeric: true,
     disablePadding: false,
     label: "Новий університет",
+    universityType: true,
   },
 ];
 
